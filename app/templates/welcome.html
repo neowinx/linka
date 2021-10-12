@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Linka</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+  </head>
+  <body>
+  <section class="hero is-link">
+    <div class="hero-body">
+      <p class="title">
+        Linka
+      </p>
+      <p class="subtitle">
+        Backend for Airelib.re
+      </p>
+    </div>
+  </section>
+  <section class="section">
+    <div class="container">
+        {% if not email %}
+        <p>Welcome, please register your user:</p>
+        <form action="/register" method=POST>
+          <div class="field">
+            <label class="label">Email</label>
+            <div class="control">
+              <input name="email" class="input" type="email" placeholder="e.g. alexsmith@gmail.com">
+            </div>
+          </div>
+          <button type=submit class="button is-link">Register</button>
+        </form>
+        {% else %}
+        <p>an email has been sended to <strong>{{ email }}</strong></p>
+        {% endif %}
+    </div>
+  </section>
+  </body>
+</html>

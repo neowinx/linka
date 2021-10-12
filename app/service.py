@@ -13,9 +13,12 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request, Form, BackgroundTasks
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security.api_key import APIKey
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
 from typing import List
 
 from . import models
@@ -23,6 +26,7 @@ from . import schemas
 from . import reports
 from .db import db
 from .authentication import validate_api_key, validate_master_key
+from .send_email import send_email_background, send_email_async
 
 
 app = FastAPI()
@@ -35,6 +39,9 @@ app.add_middleware(
 )
 
 
+templates = Jinja2Templates(directory="app/templates")
+
+
 @app.on_event("startup")
 async def startup():
     await db.connect()
@@ -43,6 +50,19 @@ async def startup():
 @app.on_event("shutdown")
 async def shutdown():
     await db.disconnect()
+
+
+#TODO: @tchx84 consider moving the register sections to a multi-project (blueprint in flask terminology)
+@app.get("/", response_class=HTMLResponse)
+async def welcome(request: Request):
+    return templates.TemplateResponse("welcome.html", {"request": request})
+
+
+@app.post("/register", response_class=HTMLResponse)
+async def register(request: Request, email: str = Form(...)):
+    await send_email_async('Linka Registration', email,
+        {'title': 'Linka registration'})
+    return templates.TemplateResponse("welcome.html", {"request": request, email: email})
 
 
 @app.post("/api/v1/sources", response_model=schemas.APIKey)
