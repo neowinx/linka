@@ -61,8 +61,8 @@ async def welcome(request: Request):
 @app.post("/register", response_class=HTMLResponse)
 async def register(request: Request, email: str = Form(...)):
     await send_email_async('Linka Registration', email,
-        {'title': 'Linka registration'})
-    return templates.TemplateResponse("welcome.html", {"request": request, email: email})
+            {'title': 'Linka registration', 'token': 'ekdl3isd3', 'base_url': 'https://rald-dev.greenbeep.com/'})
+    return templates.TemplateResponse("welcome.html", {"request": request, "email": email})
 
 
 @app.post("/api/v1/sources", response_model=schemas.APIKey)
