@@ -60,8 +60,10 @@ async def welcome(request: Request):
 
 @app.post("/register", response_class=HTMLResponse)
 async def register(request: Request, email: str = Form(...)):
+    key = await models.APIKey.create_new_key(db, email)
+    print(f'key: {key}')
     await send_email_async('Linka Registration', email,
-            {'title': 'Linka registration', 'token': 'ekdl3isd3', 'base_url': 'https://rald-dev.greenbeep.com/'})
+            {'title': 'Linka registration', 'token': key, 'base_url': 'http://localhost:8000/'})
     return templates.TemplateResponse("welcome.html", {"request": request, "email": email})
 
 

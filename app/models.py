@@ -51,6 +51,7 @@ api_keys = sqlalchemy.Table(
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("source", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("api_key_hash", sqlalchemy.String(length=65), nullable=False),
+    sqlalchemy.Column("confirmed", sqlalchemy.Boolean),
 )
 
 
