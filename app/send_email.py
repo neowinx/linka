@@ -4,15 +4,15 @@ from fastapi_mail import FastMail, MessageSchema, ConnectionConfig
 
 
 conf = ConnectionConfig(
-    MAIL_USERNAME=os.getenv('MAIL_USERNAME'),
-    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD'),
-    MAIL_FROM=os.getenv('MAIL_FROM'),
-    MAIL_PORT=os.getenv('MAIL_PORT'),
-    MAIL_SERVER=os.getenv('MAIL_SERVER'),
-    MAIL_FROM_NAME=os.getenv('MAIL_FROM_NAME'),
-    MAIL_TLS=False,
-    MAIL_SSL=False,
-    USE_CREDENTIALS=False,
+    MAIL_USERNAME=os.getenv('MAIL_USERNAME', ""),
+    MAIL_PASSWORD=os.getenv('MAIL_PASSWORD', ""),
+    MAIL_FROM=os.getenv('MAIL_FROM', "linka@planeteers.org"),
+    MAIL_PORT=os.getenv('MAIL_PORT', 25),
+    MAIL_SERVER=os.getenv('MAIL_SERVER', "localhost"),
+    MAIL_FROM_NAME=os.getenv('MAIL_FROM_NAME', "Linka"),
+    MAIL_TLS=os.getenv('MAIL_TLS', False),
+    MAIL_SSL=os.getenv('MAIL_SSL', False),
+    USE_CREDENTIALS=os.getenv('USE_CREDENTIALS', False),
     TEMPLATE_FOLDER='app/templates/email'
 )
 

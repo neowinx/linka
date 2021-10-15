@@ -51,7 +51,6 @@ api_keys = sqlalchemy.Table(
     sqlalchemy.Column("id", sqlalchemy.Integer, primary_key=True),
     sqlalchemy.Column("source", sqlalchemy.String, nullable=False),
     sqlalchemy.Column("api_key_hash", sqlalchemy.String(length=65), nullable=False),
-    sqlalchemy.Column("confirmed", sqlalchemy.Boolean),
 )
 
 
@@ -146,7 +145,7 @@ class APIKey:
         await db.execute(insert, api_key)
 
     @staticmethod
-    async def create_new_key(db: Database, source: str, as_token: False) -> str:
+    async def create_new_key(db: Database, source: str, as_token = False) -> str:
         raw_api_key = uuid.uuid4().hex
         if as_token:
             api_key_hash = hashlib.sha256(raw_api_key.encode("utf-8")).hexdigest()
@@ -159,10 +158,11 @@ class APIKey:
     @staticmethod
     async def confirm_key(db: Database, raw_api_key: str) -> str:
         api_key_hash = hashlib.sha256(raw_api_key.encode("utf-8")).hexdigest()
-        query = api_keys.select().where(api_key_hash == api_key_hash)
+        query = api_keys.select().where(api_keys.c.api_key_hash == api_key_hash)
         keys_found = await db.fetch_all(query)
         if len(keys_found) > 0:
-            return APIKey.create_new_key(db, keys_found[0].source)
+            return { 'key': await APIKey.create_new_key(db, keys_found[0].source),
+                     'source': keys_found[0].source }
         return None
 
     @staticmethod

@@ -21,7 +21,7 @@ from fastapi.templating import Jinja2Templates
 
 from typing import List
 
-rom . import models
+from . import models
 from . import schemas
 from . import reports
 from .db import db
@@ -60,17 +60,21 @@ async def welcome(request: Request):
 
 @app.post("/register", response_class=HTMLResponse)
 async def register(request: Request, email: str = Form(...)):
-    key = await models.APIKey.create_new_key(db, email, True)
+    challenge = await models.APIKey.create_new_key(db, email, True)
     await send_email_async('Linka Registration', email,
-            {'title': 'Linka registration', 'token': key, 'base_url': 'http://localhost:8000/'})
+            {'title': 'Linka registration', 'challenge': challenge, 'base_url': 'http://localhost:8000',
+                'message': 'You have requested your registration for linka.'
+                ' To get your access token please click on the next button'})
     return templates.TemplateResponse("welcome.html", {"request": request, "email": email})
 
 
-@app.post("/confirm/{token}", response_class=HTMLResponse)
-async def confirm(request: Request, token: str):
-    key = await models.APIKey.create_new_key(db, email, True)
-    await send_email_async('Linka Registration', email,
-            {'title': 'Linka registration', 'token': key, 'base_url': 'http://localhost:8000/'})
+@app.get("/confirm/{challenge}", response_class=HTMLResponse)
+async def confirm(request: Request, challenge: str):
+    api_key_record = await models.APIKey.confirm_key(db, challenge)
+    await send_email_async('Linka API Token', api_key_record['source'],
+            {'title': 'Linka API Token', 'token': api_key_record['key'],
+                'message': 'This is your Linka API Token.'
+                ' Don\'t share it with anyone:'})
     return templates.TemplateResponse("welcome.html", {"request": request, "email": email})
 
 
