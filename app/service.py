@@ -21,7 +21,7 @@ from fastapi.templating import Jinja2Templates
 
 from typing import List
 
-from . import models
+rom . import models
 from . import schemas
 from . import reports
 from .db import db
@@ -60,8 +60,15 @@ async def welcome(request: Request):
 
 @app.post("/register", response_class=HTMLResponse)
 async def register(request: Request, email: str = Form(...)):
-    key = await models.APIKey.create_new_key(db, email)
-    print(f'key: {key}')
+    key = await models.APIKey.create_new_key(db, email, True)
+    await send_email_async('Linka Registration', email,
+            {'title': 'Linka registration', 'token': key, 'base_url': 'http://localhost:8000/'})
+    return templates.TemplateResponse("welcome.html", {"request": request, "email": email})
+
+
+@app.post("/confirm/{token}", response_class=HTMLResponse)
+async def confirm(request: Request, token: str):
+    key = await models.APIKey.create_new_key(db, email, True)
     await send_email_async('Linka Registration', email,
             {'title': 'Linka registration', 'token': key, 'base_url': 'http://localhost:8000/'})
     return templates.TemplateResponse("welcome.html", {"request": request, "email": email})

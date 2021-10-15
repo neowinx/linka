@@ -10,9 +10,9 @@ conf = ConnectionConfig(
     MAIL_PORT=os.getenv('MAIL_PORT'),
     MAIL_SERVER=os.getenv('MAIL_SERVER'),
     MAIL_FROM_NAME=os.getenv('MAIL_FROM_NAME'),
-    MAIL_TLS=True,
+    MAIL_TLS=False,
     MAIL_SSL=False,
-    USE_CREDENTIALS=True,
+    USE_CREDENTIALS=False,
     TEMPLATE_FOLDER='app/templates/email'
 )
 
