@@ -75,7 +75,7 @@ async def confirm(request: Request, challenge: str):
             {'title': 'Linka API Token', 'token': api_key_record['key'],
                 'message': 'This is your Linka API Token.'
                 ' Don\'t share it with anyone:'})
-    return templates.TemplateResponse("welcome.html", {"request": request, "email": email})
+    return templates.TemplateResponse("welcome.html", {"request": request, "registered": True})
 
 
 @app.post("/api/v1/sources", response_model=schemas.APIKey)
